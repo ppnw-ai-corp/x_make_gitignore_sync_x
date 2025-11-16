@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 import sys
-from collections.abc import Iterable
+from collections import abc
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -80,7 +80,12 @@ def _sync_repo(repo: Path, template: str, *, dry_run: bool) -> str | None:
     return "updated"
 
 
-def _sync_all(repos: Iterable[Path], template: str, *, dry_run: bool) -> SyncResult:
+def _sync_all(
+    repos: abc.Iterable[Path],
+    template: str,
+    *,
+    dry_run: bool,
+) -> SyncResult:
     created: list[Path] = []
     updated: list[Path] = []
     unchanged: list[Path] = []

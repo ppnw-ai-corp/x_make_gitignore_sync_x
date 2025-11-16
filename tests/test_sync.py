@@ -1,11 +1,18 @@
+# ruff: noqa: S101, SLF001
+
 from __future__ import annotations
 
-from pathlib import Path
+import pathlib
 
 from x_make_gitignore_sync_x import sync
 
 
-def _make_repo(root: Path, name: str, *, gitignore: str | None = None) -> Path:
+def _make_repo(
+    root: pathlib.Path,
+    name: str,
+    *,
+    gitignore: str | None = None,
+) -> pathlib.Path:
     repo = root / name
     repo.mkdir()
     (repo / ".git").mkdir()
@@ -14,7 +21,7 @@ def _make_repo(root: Path, name: str, *, gitignore: str | None = None) -> Path:
     return repo
 
 
-def test_sync_creates_missing_gitignore(tmp_path: Path) -> None:
+def test_sync_creates_missing_gitignore(tmp_path: pathlib.Path) -> None:
     template = "# example\n__pycache__/\n"
     repo = _make_repo(tmp_path, "sample")
 
@@ -24,7 +31,7 @@ def test_sync_creates_missing_gitignore(tmp_path: Path) -> None:
     assert (repo / ".gitignore").read_text(encoding="utf-8") == template
 
 
-def test_sync_updates_existing_gitignore(tmp_path: Path) -> None:
+def test_sync_updates_existing_gitignore(tmp_path: pathlib.Path) -> None:
     template = "# canonical\n"
     repo = _make_repo(tmp_path, "existing", gitignore="# old\n")
 
@@ -34,7 +41,7 @@ def test_sync_updates_existing_gitignore(tmp_path: Path) -> None:
     assert (repo / ".gitignore").read_text(encoding="utf-8") == template
 
 
-def test_sync_dry_run_does_not_touch_disk(tmp_path: Path) -> None:
+def test_sync_dry_run_does_not_touch_disk(tmp_path: pathlib.Path) -> None:
     template = "# canonical\n"
     repo = _make_repo(tmp_path, "dry", gitignore="# old\n")
 
@@ -44,7 +51,7 @@ def test_sync_dry_run_does_not_touch_disk(tmp_path: Path) -> None:
     assert (repo / ".gitignore").read_text(encoding="utf-8") == "# old\n"
 
 
-def test_discovery_includes_root_git_repo(tmp_path: Path) -> None:
+def test_discovery_includes_root_git_repo(tmp_path: pathlib.Path) -> None:
     (tmp_path / ".git").mkdir()
     _make_repo(tmp_path, "child")
 
