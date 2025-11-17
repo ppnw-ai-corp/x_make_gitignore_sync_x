@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 import sys
-from collections import abc
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -81,11 +81,14 @@ def _sync_repo(repo: Path, template: str, *, dry_run: bool) -> str | None:
 
 
 def _sync_all(
-    repos: abc.Iterable[Path],
+    repos: Iterable[Path],
     template: str,
     *,
     dry_run: bool,
 ) -> SyncResult:
+    if not isinstance(repos, Iterable):
+        message = "repos must be an iterable of pathlib.Path instances"
+        raise TypeError(message)
     created: list[Path] = []
     updated: list[Path] = []
     unchanged: list[Path] = []
