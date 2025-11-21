@@ -1,21 +1,11 @@
-# ruff: noqa: S101, SLF001
-
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 from x_make_gitignore_sync_x import sync
 
-if TYPE_CHECKING:
-    from pathlib import Path
 
-
-def _make_repo(
-    root: Path,
-    name: str,
-    *,
-    gitignore: str | None = None,
-) -> Path:
+def _make_repo(root: Path, name: str, *, gitignore: str | None = None) -> Path:
     repo = root / name
     repo.mkdir()
     (repo / ".git").mkdir()

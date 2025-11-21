@@ -80,15 +80,7 @@ def _sync_repo(repo: Path, template: str, *, dry_run: bool) -> str | None:
     return "updated"
 
 
-def _sync_all(
-    repos: Iterable[Path],
-    template: str,
-    *,
-    dry_run: bool,
-) -> SyncResult:
-    if not isinstance(repos, Iterable):
-        message = "repos must be an iterable of pathlib.Path instances"
-        raise TypeError(message)
+def _sync_all(repos: Iterable[Path], template: str, *, dry_run: bool) -> SyncResult:
     created: list[Path] = []
     updated: list[Path] = []
     unchanged: list[Path] = []
