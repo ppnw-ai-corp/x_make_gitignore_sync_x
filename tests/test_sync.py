@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from pathlib import Path
+# ruff: noqa: SLF001,S101 (tests intentionally exercise private helpers and use pytest-style asserts)
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 from x_make_gitignore_sync_x import sync
 

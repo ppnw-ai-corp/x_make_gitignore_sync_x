@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import argparse
 import sys
-from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 _TEMPLATE_FILENAME = "resources/gitignore-template.txt"
 
