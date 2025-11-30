@@ -6,12 +6,20 @@ import argparse
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
 _TEMPLATE_FILENAME = "resources/gitignore-template.txt"
+
+
+@dataclass(slots=True)
+class CLIArgs:
+    root: Path
+    template: Path
+    dry_run: bool
+    quiet: bool
 
 
 @dataclass(slots=True)
@@ -100,7 +108,7 @@ def _sync_all(repos: Iterable[Path], template: str, *, dry_run: bool) -> SyncRes
     return SyncResult(created=created, updated=updated, unchanged=unchanged)
 
 
-def _parse_args(argv: list[str]) -> argparse.Namespace:
+def _parse_args(argv: list[str]) -> CLIArgs:
     parser = argparse.ArgumentParser(description=__doc__)
     default_root = Path(__file__).resolve().parents[1].parent
     parser.add_argument(
@@ -125,19 +133,32 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         action="store_true",
         help="Suppress summary output (errors still propagate)",
     )
-    return parser.parse_args(argv)
+    parsed = parser.parse_args(argv)
+    root = cast("Path", parsed.root)
+    template = cast("Path", parsed.template)
+    dry_run = cast("bool", parsed.dry_run)
+    quiet = cast("bool", parsed.quiet)
+    return CLIArgs(
+        root=root,
+        template=template,
+        dry_run=dry_run,
+        quiet=quiet,
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = _parse_args(argv or sys.argv[1:])
-    root = args.root.resolve()
-    template_path = args.template.resolve()
+    cli_argv = argv if argv is not None else sys.argv[1:]
+    args = _parse_args(cli_argv)
+    root = Path(args.root).resolve()
+    template_path = Path(args.template).resolve()
+    dry_run = bool(args.dry_run)
+    quiet = bool(args.quiet)
 
     template = _load_template(template_path)
     repos = _discover_repositories(root)
-    result = _sync_all(repos, template, dry_run=args.dry_run)
+    result = _sync_all(repos, template, dry_run=dry_run)
 
-    if not args.quiet:
+    if not quiet:
         result.log()
 
     return 0
