@@ -15,6 +15,7 @@ the exact same contents, and reports what changed.
 - Git caches, reports and build artefacts were sneaking into different repos.
 - Shared tooling (pytest, mypy, Ruff, etc.) needs consistent exclusions.
 - New repositories should inherit the template automatically without copy/paste.
+- Generated lint artefacts like `artifacts/ruff_focus.json` should never dirty trees.
 
 ## What the tool does
 
